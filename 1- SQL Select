@@ -14,6 +14,13 @@ Exercise 4
 
 
 Exercise 5
+
+1.	The HR department wants a query to display the last name and salary of employees who earn between $5,000 and $12,000, and are in department 20 or 50. Label the columns Employee and Monthly Salary, respectively.
+2.	The HR department needs a report that displays the last name and hire date of all employees who were hired in 2006.
+3.	Create a report to display the last name, salary, and commission of all employees who earn commissions. 
+4.	Because of budget issues, the HR department needs a report that displays the last name and salary of employees who earn more than $12,000.
+
+
 #############################
 SELECT LAST_NAME "Employees", SALARY  as "Monthly Salary" FROM EMPLOYEES
 WHERE salary between 5000 and 12000 and (department_id in 20 or department_id =50);
