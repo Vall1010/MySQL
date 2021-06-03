@@ -46,6 +46,9 @@ WHERE hire_date BETWEEN '01-JAN-06' AND '31-DEC-06';
 
 SELECT last_name, SALARY, commission_pct FROM EMPLOYEES
 WHERE commission_pct IS NOT NULL;
+or
+SELECT last_name, SALARY, commission_pct FROM EMPLOYEES
+WHERE commission_pct IS NOT NULL and commission_pct>0;
 
 
 SELECT last_name, salary from employees
