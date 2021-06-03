@@ -1,0 +1,16 @@
+SELECT LAST_NAME "Employees", SALARY  as "Monthly Salary" FROM EMPLOYEES
+WHERE salary between 5000 and 12000 and (department_id in 20 or department_id =50);
+
+
+SELECT last_name, hire_date FROM EMPLOYEES
+WHERE hire_date BETWEEN '01-JAN-06' AND '31-DEC-06';
+
+
+SELECT last_name, SALARY, commission_pct FROM EMPLOYEES
+WHERE commission_pct IS NOT NULL;
+
+
+SELECT last_name, salary from employees
+where salary >12000;
+
+
