@@ -10,6 +10,12 @@ Exercise 3
 #############################
 
 Exercise 4
+1. The HR department wants a query to display all unique job IDs from the EMPLOYEES table.
+2. The HR department has also requested a report of all employees and their job IDs. Display the last name concatenated with the job ID (separated by a comma and space) and name the column Employee and Title.
+3. Create a query to display all the data from that table. Separate each column output by a comma. Name the column THE_OUTPUT.
+
+
+
 #############################
 
 
@@ -19,9 +25,9 @@ Exercise 5
 2.	The HR department needs a report that displays the last name and hire date of all employees who were hired in 2006.
 3.	Create a report to display the last name, salary, and commission of all employees who earn commissions. 
 4.	Because of budget issues, the HR department needs a report that displays the last name and salary of employees who earn more than $12,000.
-
-
 #############################
+
+
 SELECT LAST_NAME "Employees", SALARY  as "Monthly Salary" FROM EMPLOYEES
 WHERE salary between 5000 and 12000 and (department_id in 20 or department_id =50);
 
