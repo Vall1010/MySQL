@@ -1,0 +1,11 @@
+Oracle Database
+
+Exercise 6
+############
+
+1. Create a report to display the last name, job ID, and hire date for employees with the last names of Matos or Taylor. Order the query in ascending order by hire date.
+2. Members of the HR department want to have more flexibility with the queries that you are writing. They would like a report that displays the last name and salary of employees who earn more than an amount that the user specifies after a prompt. 
+3. The HR department wants to run reports based on a manager. Create a query that prompts the user for a manager ID, and generates the employee ID, last name, salary, and department for that manager’s employees.
+4. Display the last names of all employees who have both an “a” and an “e” in their last name. Order the query in descending by salary
+
+
