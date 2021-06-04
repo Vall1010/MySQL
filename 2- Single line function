@@ -1,0 +1,43 @@
+Concat 
+
+select concat (last_name, first_name)
+from employees;
+
+or 
+
+select last_name || ' ' || first_name
+from employees;
+
+
+SUBSTR
+
+--
+--
+--select last_name || ' ' || first_name
+--from employees;
+
+--SUBSTR - initial position is 1 not 0 
+select substr(last_name, 2,4)
+from employees;
+
+
+----
+----
+----select last_name || ' ' || first_name
+----from employees;
+--
+----SUBSTR - initial position is 1 not 0 
+--select substr(last_name, 2)
+--from employees;
+
+
+length  and INSSTR
+select last_name , LENGTH(last_name), instr(last_name, 'a')
+from employees;
+
+
+--lpad /rpad left and right masking char with ***
+select rpad(salary,15, '0' )
+from employees;
+
+
