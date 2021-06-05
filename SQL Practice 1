@@ -42,4 +42,62 @@ from employees;
 
 Act 5
 #####
+select last_name Employee, salary "Monthly Salary"
+from employees
+where salary between 5000 and 12000 and department_id in (20 ,50);
+
+
+select last_name , hire_date
+from employees
+where hire_date between '01-Jan-06' and '31-DEC-06';
+
+
+select last_name, salary, commission_pct
+from employees
+where commission_pct is not Null;
+
+select last_name, salary
+from employees
+where salary >12000;
+
+Act 6
+#####
+select last_name, job_id, hire_date
+from employees
+where last_name in ('Matos' ,'Taylor')
+order by hire_date asc;
+
+select last_name, salary 
+from employees
+where salary > &Variable;
+    
+    select employee_id ,last_name, salary, department_id
+    from employees
+    where manager_id = &Variable;
+    
+    
+    select last_name, first_name 
+    from employees 
+    where last_name LIKE '%a%' and  last_name LIKE '%e%' 
+    order by salary desc;
+    
+    Act 7 
+    ######
+    
+    
+    select initcap(last_name), length (last_name)
+    from employees
+    where last_name in 'J%' or last_name like 'A%' or last_name like 'M%'
+    order by last_name ;
+    
+    
+    select last_name || ' '||lpad(salary, 15, '$' ) SALARY
+    from employees;
+    
+    
+    
+    select rpad(last_name,8) ||' ' ||lpad(' ', salary/1000 +1, '*') EMPLOYEES_AND_THEIR_SALARY
+    from employees
+    order by salary desc;
+
 
