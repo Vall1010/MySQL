@@ -1,0 +1,45 @@
+Qoute operator 
+##############
+
+
+SELECT first_name, last_name, salary,
+first_name||q'{ has salary's }'||salary 
+from employees;
+
+
+SELECT q'{ has salary's }'||salary 
+from employees;
+
+Distinct 
+#########
+
+select distinct department_id
+from employees;
+
+
+Describe 
+########
+describe employees;
+
+Act 3
+#####
+select employee_id ,last_name, job_id, hire_date STARTDATE
+from employees;
+
+
+select last_name, first_name, salary INCOME
+from employees;
+
+Act 4
+######
+
+select distinct job_id
+from employees; 
+
+select employee_id ||','||first_name ||','||last_name||','||email ||','||phone_number||','||hire_date ||','||job_id||','||salary||','||commission_pct||','||manager_id||','||department_id "THE_OUTPUT"
+from employees;
+
+
+Act 5
+#####
+
