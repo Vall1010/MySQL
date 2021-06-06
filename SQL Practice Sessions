@@ -123,3 +123,8 @@ SELECT LAST_NAME , TRUNC((MONTHS_BETWEEN(SYSDATE,hire_date))*4,0) "TENURE"
 FROM EMPLOYEES
 WHERE DEPARTMENT_id =90;
 
+
+Note: like and in 
+Like - uses wildcards
+in  - exact variable name
+
