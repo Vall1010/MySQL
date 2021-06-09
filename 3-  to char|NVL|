@@ -1,0 +1,103 @@
+--to_char
+--change formatting of date to format specified
+
+--yyyy
+--yEARE 
+--mm
+--month
+--mon
+--dy
+--day
+--dd
+
+--ttIME 
+select to_char(sysdate-1, 'Ddspth" OF "Mon/RRth/hh24:mI am')
+from dual; 
+
+
+-- TO CHAR 
+SELECT FIRST_NAME, LAST_NAME 
+FROM EMPLOYEES 
+WHERE TO_CHAR(HIRE_DATE,'YY')='03'; 
+-- OR BETWEEN '01-jAN-03' AND '31-DEC-03';
+
+
+-- TO CHAR  FUNCTION WITH NUMBERS , 
+-- NOTE : TO CHAR OUTPUT IS ALWAYS A TEXT NO LONGER A NUMBER(CHAR)
+
+--CONCERTING NUMBER TO CHAR OR TEXT
+SELECT LAST_NAME, FIRST_NAME, TO_CHAR(SALARY , 'L99,999')
+FROM EMPLOYEES;
+
+
+--CONVERTING BACK TO NUMBER OR DATE FROM TO_CHAR 
+
+SELECT SYSDATE, TO_CHAR(SYSDATE-5,'DAY,DDSpth "OF" MONTH yyy hh24:mi:ss'),
+TO_DATE('02/06/2021', 'DD/MM/YYYY')+2, TO_NUMBER('$64,000','$99,999')
+FROM DUAL;
+
+
+--nesting function , the expression in the middle will be executed first
+
+
+-- General  functions
+
+--NVL evaluate column express if result is null return value 
+--given in the expression , in this case 0 and can add value if another  expression is done 
+select  last_name , nvl(commission_pct,0) +1 
+from employees;
+
+--concerting to is null values to text 
+select  last_name , nvl(to_char(commission_pct),'Wala')||123
+from employees;
+
+-- implicit conversion , if oracle understand the format and implicilty accept the format , date to number and number to text 
+
+
+
+-- NVL 2 is 2 expression 
+--check  first expression if null then second expression if not third expression will be displayed 
+
+--select last_name , salary , commission_pct, 
+--Nvl2(commission_pct, '
+
+
+
+--coalesce function  , bigger form of NVL , will display the first not null value 
+--can not combine different data type 
+-- can use to_char to convert everything as text
+
+
+select employee_id, last_name, coalesce(commission_pct, manager_id, 0)
+from employees;
+
+--convert to tochar to have the value of last expression if is Null
+select employee_id, last_name, coalesce(to_char(commission_pct), to_char(manager_id), 'No Commission and No manager')
+from employees;
+
+
+
+--Exercise 9 assignment 
+
+--conditional expression 
+--if then else  case expression , decode function
+
+
+select employee_id, last_name, department_ID,salary,
+case department_id when 60 then salary*1.20 
+                   when 80 then salary*1.30
+                   when 90 then salary*1.10
+                   else salary*1.50 end new_salary, Job_id
+from employees 
+order by new_salary asc;
+
+
+--decode function if then else 
+
+select employee_id, last_name, department_ID,salary,
+decode (department_id,60 ,salary*1.20, 
+                   80,salary*1.30,
+                   90,salary*1.10,
+                   salary*1.50)new_salary
+from employees ;
+
