@@ -1,0 +1,43 @@
+--Group function
+
+select avg(salary), max (salary), min (salary), count(employee_id), sum(salary), count(*)
+from employees;
+
+-- count / Group function only include non null values
+
+select count(distinct department_id)
+from employees;
+
+select avg(nvl(commission_pct,0))
+from employees;
+
+
+--group by clause
+--FORMAT
+--select
+--from
+--where
+--group by
+--order by
+
+
+
+select manager_id,job_id, department_id, avg(salary), max(salary),min(salary), sum(salary)
+from employees
+group by department_id , job_id ,manager_id
+order by department_id;
+
+
+
+--Error message
+-- Goup clause cannot use where , use having instead 
+-- having is the where function for group queries 
+
+
+select manager_id,job_id, department_id, avg(salary), max(salary),min(salary), sum(salary)
+from employees
+group by department_id , job_id ,manager_id
+--having should have group function argument as input
+having max(salary)>5000 and avg(salary)>2000
+order by department_id;
+
