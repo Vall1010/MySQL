@@ -1,0 +1,240 @@
+--1
+SELECT
+    employee_id,    
+    last_name,    
+    hire_date as STARTDATE,
+    job_id
+FROM
+    employees;
+--2
+SELECT
+    first_name,     
+    last_name,
+    salary INCOME
+FROM
+    employees;
+
+
+--2
+--The HR department wants a query to display all unique job IDs from the EMPLOYEES table.
+SELECT DISTINCT
+    job_id
+FROM
+    employees;
+
+/*The HR department has also requested a report of all employees and their job IDs. 
+Display the last name concatenated with the job ID (separated by a comma and space) 
+and name the column Employee and Title.*/
+
+SELECT
+    last_name
+    || ' '
+    || job_id AS "Employee and Title"
+FROM
+    employees;
+
+/*Create a query to display all the data from that table. 
+Separate each column output by a comma. Name the column THE_OUTPUT.
+*/
+
+SELECT
+    employee_id|| ', ' ||
+    first_name|| ', ' ||
+    last_name|| ', ' ||
+    email|| ', ' ||
+    phone_number|| ', ' ||
+    hire_date|| ', ' ||
+    job_id|| ', ' ||
+    salary|| ', ' ||
+    commission_pct|| ', ' ||
+    manager_id|| ', ' ||
+    department_id as THE_OUTPUT
+FROM
+    employees;
+
+
+3
+/*
+The HR department wants a query to to display the last name and salary of employees who earn between $5,000 and $12,000, and are in department 20 or 50. Label the columns Employee and Monthly Salary, respectively.
+*/
+SELECT last_name "Employee", salary "Monthly Salary"
+FROM employees
+WHERE salary BETWEEN 5000 AND 12000
+AND department_id IN (20, 50);
+
+
+/*
+The HR department needs a report that displays the last name and hire date of all employees who were hired in 2006.
+*/
+SELECT last_name, hire_date
+FROM employees
+WHERE hire_date >= '01-JAN-06' AND hire_date < '01-JAN-07';
+
+/*
+Create a report to display the last name, salary, and commission of all employees who earn commissions.
+*/
+SELECT last_name, salary, commission_pct
+FROM employees
+WHERE commission_pct IS NOT NULL
+
+/*
+Because of budget issues, the HR department needs a report that displays the last name and salary of employees who earn more than $12,000
+*/
+SELECT last_name, salary
+FROM employees
+WHERE salary > 12000;
+
+4
+/*
+Create a report to display the last name, job ID, and hire date 
+for employees with the last names of Matos or Taylor. 
+Order the query in ascending order by hire date.
+*/
+SELECT last_name, job_id, hire_date
+FROM employees
+WHERE last_name IN ('Matos', 'Taylor')
+ORDER BY hire_date;
+
+/*
+Members of the HR department want to have more flexibility with the queries that you are writing. 
+They would like a report that displays the last name and salary of employees who earn more 
+than an amount that the user specifies after a prompt. 
+*/
+SELECT last_name, salary
+FROM employees
+WHERE salary > &sal_amt;
+
+/*
+The HR department wants to run reports based on a manager. 
+Create a query that prompts the user for a manager ID, and generates the employee ID, 
+last name, salary, and department for that manager’s employees.
+*/
+SELECT employee_id, last_name, salary, department_id
+FROM employees
+WHERE manager_id = &mgr_num
+ORDER BY &order_col;
+
+/*
+Display the last names of all employees who have both an “a” and an “e” in their last name.
+Order the query in descending by salary
+*/
+SELECT last_name
+FROM employees
+WHERE last_name LIKE '%a%'
+AND last_name LIKE '%e%'
+ORDER BY salary DESC;
+
+5
+/*Write a query to display the system date. Label the column Date.*/
+SELECT sysdate "Date"
+FROM dual;
+
+/*
+The HR department needs a report to display the employee number, last name, salary, 
+and salary increased by 15.5% (expressed as a whole number) for each employee.
+*/
+SELECT employee_id, last_name, salary,
+ROUND(salary * 1.155, 0) "New Salary"
+FROM employees;
+
+/*Modify your previous query to add a column that subtracts the old salary from the new salary. Label the column Increase*/
+SELECT employee_id, last_name, salary,
+ROUND(salary * 1.155, 0) "New Salary",
+ROUND(salary * 1.155, 0) - salary "Increase"
+FROM employees;
+
+/*The HR department wants to find the duration of employment for each employee. For each employee, 
+display the last name and calculate the number of months between today and the date on which the employee was hired.
+Label the column as MONTHS_WORKED. Order your results by the number of months employed. 
+The number of months must be rounded to the closest whole number.*/
+SELECT last_name, ROUND(MONTHS_BETWEEN(
+SYSDATE, hire_date)) MONTHS_WORKED
+FROM employees
+ORDER BY months_worked;
+
+/*Create a query to display the last name and the number of weeks employed for all employees in department 90. 
+Label the number of weeks column as TENURE. Truncate the number of weeks value to 0 decimal places. 
+Show the records in descending order of the employee’s tenure.
+*/
+SELECT last_name, trunc((SYSDATE-hire_date)/7) AS TENURE
+FROM employees
+WHERE department_id = 90
+ORDER BY TENURE DESC;
+
+6
+/*Create a report that produces the following for each employee:
+<employee last name> earns <salary> monthly but wants <3 times salary.>.
+Label the column Dream Salaries.
+*/
+SELECT last_name || ' earns '
+|| TO_CHAR(salary, 'fm$99,999.00')
+|| ' monthly but wants '
+|| TO_CHAR(salary * 3, 'fm$99,999.00')
+|| '.' "Dream Salaries"
+FROM employees;
+
+/*Display each employee’s last name, hire date, and salary review date, which is the first Monday after six months of service. 
+Label the column REVIEW. Format the dates to appear in a format that is similar to “Monday, the Thirty-First of July, 2000.”*/
+SELECT last_name, hire_date,
+TO_CHAR(NEXT_DAY(ADD_MONTHS(hire_date, 6),'MONDAY'),
+'fmDay, "the" Ddspth "of" Month, YYYY') REVIEW
+FROM employees;
+
+/*Create a query that displays employees’ last names and commission amounts. 
+If an employee does not earn commission, show “No Commission.” Label the column COMM
+*/
+SELECT last_name,
+NVL(TO_CHAR(commission_pct), 'No Commission') COMM
+FROM employees;
+
+7
+/*Using the DECODE function, write a query that displays 
+the grade of all employees based on the value of the JOB_ID column, using the following data*/
+SELECT job_id, decode (job_id,
+'ST_CLERK', 'E',
+'SA_REP', 'D',
+'IT_PROG', 'C',
+'ST_MAN', 'B',
+'AD_PRES', 'A',
+'0')GRADE
+FROM employees;
+
+/*Rewrite the statement in the preceding exercise by using the CASE syntax*/
+SELECT job_id, CASE job_id
+WHEN 'ST_CLERK' THEN 'E'
+WHEN 'SA_REP' THEN 'D'
+WHEN 'IT_PROG' THEN 'C'
+WHEN 'ST_MAN' THEN 'B'
+WHEN 'AD_PRES' THEN 'A'
+ELSE '0' END GRADE
+FROM employees;
+
+--EXERCISE 11
+
+SELECT dEPARTMENT_id, COUNT(EMPLOYEE_ID)EMPLOYEES
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+ORDER BY EMPLOYEES;
+
+SELECT COUNT(DISTINCT MANAGER_ID)"NUMBER OF MAANGERS"
+FROM EMPLOYEES;
+
+SELECT MAX(SALARY)- MIN(SALARY)DIFFERENCE
+FROM EMPLOYEES;
+
+SELECT MANAGER_ID, MIN(SALARY)
+FROM EMPLOYEES
+WHERE MANAGER_id IS NOT NULL
+GROUP BY MANAGER_ID
+HAVING MIN(SALARY)>6000
+ORDER BY MIN(SALARY)DESC;
+
+
+
+SELECT SUM(CASE TO_CHAR(HIRE_DATE,'yyyy') WHEN '2005' THEN 1 ELSE 0 END) AS "2005",
+    SUM(CASE TO_CHAR(HIRE_DATE,'yyyy') WHEN '2006' THEN 1 ELSE 0 END) AS "2006",
+    SUM(CASE TO_CHAR(HIRE_DATE,'yyyy') WHEN '2007' THEN 1 ELSE 0 END) AS "2007",
+    SUM(CASE TO_CHAR(HIRE_DATE,'yyyy') WHEN '2008' THEN 1 ELSE 0 END) AS "2008"
+FROM EMPLOYEES;
+ 
+
