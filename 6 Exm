@@ -1,0 +1,46 @@
+
+--1 ok
+select first_name, last_name, salary, hire_date, department_id
+from employees
+where (hire_date between '01/Jan/2005' and '31/Dec/2005'
+or hire_date between '01/Jan/2008' and '31/Dec/2008')
+and first_name like 'A%a';
+
+--2 ok
+SELECT department_id, Max(SALARY)
+FROM employees
+WHERE department_id IS NOT NULL
+GROUP BY department_id
+HAVING max(SALARY)>5000
+ORDER BY Max(SALARY) DESC;
+
+
+
+--3 ok
+select first_name, last_name, salary, department_id
+from employees
+where (salary between 3000 and 15000) and (department_id != 90 and department_id != 50) ;
+
+
+--4 ok
+select NVL(To_char(salary*commission_pct),'No Commission')
+from employees
+where department_id in (90,80,60);
+
+
+--5 ok
+select first_name, last_name, salary, hire_date, department_id 
+from employees
+where length(first_name)>4;
+
+-- 6 ok
+
+SELECT first_name || ' ' || last_name "Full Name" , department_id, salary "Current Salary",
+CASE department_id 
+WHEN 90 THEN salary+(salary*.30) 
+WHEN 80 THEN salary+(salary*.20)
+WHEN 60 THEN salary+(salary*.25)
+ELSE salary+(salary*.10)END "Increment"
+from employees;
+
+
