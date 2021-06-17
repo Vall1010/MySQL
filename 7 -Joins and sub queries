@@ -1,0 +1,62 @@
+-- inner or regular join 
+select count(*)
+from employees emp join departments dept 
+on (emp.department_id = dept.department_id);
+
+
+select *
+from employees emp join departments dept 
+on (emp.department_id = dept.department_id );
+
+
+
+--outer join 
+--left outer join , gets everything even the null values
+select first_name, last_name, dept.department_id, dept.department_name
+-- left outer join  can be left join 
+from employees emp left outer join departments dept 
+on (emp.department_id = dept.department_id );
+
+
+
+
+--ex 12 
+
+select w.last_name e_Name, w.employee_id e_Id, mgr.last_name mName, mgr.employee_id m_Id
+from employees w left join employees mgr
+on (w.manager_id = mgr.employee_id)
+order by w.employee_id ; 
+
+select e1.department_id department, e1.last_name employee, e2.last_name colleague
+from employees e1 join employees e2
+on (e1.department_id=e2.department_id)
+and  (e1.employee_id >e2.employee_id)
+order by 1,2;
+
+--not the best approach , btter to check the last name for possible duplicate , better to find date employee ID first
+select e1.last_name, e1.hire_date, eDavies.hire_date DaviesHD
+from employees e1 join employees eDavies
+on (eDavies.last_name = 'Davies'and e1.hire_date>eDavies.hire_date)
+order by e1.hire_date;
+
+--or
+
+select e1.last_name, e1.hire_date, eDavies.hire_date DaviesHD
+from employees e1 join employees eDavies
+on (eDavies.employee_id = 142 and e1.hire_date>eDavies.hire_date)
+order by e1.hire_date;
+
+
+--looking for manager id and hire date
+
+
+--sub queries
+--always use parenthesis for subqueries and add indentation
+
+
+select last_name, salary 
+from employees
+where salary> (select salary
+                from employees
+                where last_name='Abel' and );
+                -- be careful about multiple output for sub queries
