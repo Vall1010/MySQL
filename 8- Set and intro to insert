@@ -1,0 +1,141 @@
+--using order by can only be used at the end of the query otherwise you wil get an error
+--in order by clause , alias should be used from first query to be recognized
+
+--set operators 
+--set removes duplicate values except union all 
+
+--union operator  - result of two 
+select employee_id , job_id
+from employees
+union 
+select employee_id, job_id
+from Job_history
+order by Job_id desc;
+--order by should be in the end  --alias will be ignored  , will only allow alias from 1st query
+-- must have the same amount for the two queries 
+-- can use literals such as '-' to add column
+-- in union all must have the same data type for oracle , we can use to_char(___,'text here ') to convert to text  then '$0'
+
+
+select employee_id , job_id ,to_char(salary , '$99,999.00')
+from employees
+union 
+select employee_id, job_id, '$0'
+from Job_history
+order by Job_id desc;
+
+
+-- union all , result not sorted 
+-- put everything including duplicate 
+
+
+select employee_id , job_id, salary 
+from employees where salary =10000
+union all
+select employee_id, job_id,salary 
+from employees where salary = 2100
+union all
+select employee_id, job_id,salary 
+from employees where salary = 6000;
+
+
+-- first query will be returned then second query will be returned , will be sorted according to query order 
+--order by Job_id desc;
+
+
+--INTERSECT OPERATOR, shows only common to both querty results 
+select employee_id , job_id
+from employees
+intersect
+select employee_id , job_id
+from job_history;
+
+--Minus operator 
+--minus gets result from queries except what is in the second query
+
+select employee_id , job_id
+from employees
+minus
+select employee_id , job_id
+from job_history;
+
+
+--use parenthesis to set priority and order for queries 
+--items in parenthesis will be executed first
+
+
+
+
+--exercise 
+--create a report with dept it that do not contain a certain job id  using set operator 
+
+select department_id
+from employees
+minus 
+select department_id
+from employees
+where job_id='ST_CLERK';
+
+-- no need for distinct since it does not show duplicates
+
+
+--list of countries that have no departments  located in them 
+
+select country_id, country_name
+from countries 
+minus
+select country_id, country_name
+from countries join locations using(country_id)
+join departments using(location_id);
+
+
+
+select distinct job_id, department_id
+from employees
+where department_id=10
+union all
+select distinct job_id, department_id
+from employees
+where department_id=50
+union all
+select distinct job_id, department_id
+from employees
+where department_id=20;
+
+
+select employee_id, job_id
+from employees
+intersect
+select employee_id, job_id 
+from job_history;
+
+
+SELECT last_name, department_id, null department
+from employees
+union all
+select null, department_id, department_name
+from departments;
+--respect the posiition of query 
+--null can be used in all data types
+
+
+--############################################################
+
+
+-- Data manipulation language  or DML
+--transaction consist of a collection of DML statements that form a logical unit of work
+
+--INSERT
+--insert into departments(department_id, department_name, manager_id, location_id)
+--values(70, 'Public Relations',100,1700)
+
+
+select* 
+from countries;
+
+insert into countries (country_id,country_name,region_id)
+VALUES('PH','Philippines',2);
+
+-- provide list or insert values and follow exact order of the list use desc to know order of columns 
+-- shwn using insert be carefull with the non nullable values, be mindfull also with allowed values in the table
+--and configuration
