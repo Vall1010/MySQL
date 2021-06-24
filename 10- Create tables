@@ -1,0 +1,7 @@
+create table my_new_table
+(column1 varchar2(10) not null,
+column2 number(10,2) default 0,
+column3 char(1),
+constraint column2_unique unique(column2));
+constraint column1 pk primary key(column1));
+
