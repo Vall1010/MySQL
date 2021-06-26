@@ -1,0 +1,589 @@
+Exercise 12 
+
+/*
+Write a query for the HR department to produce the addresses of all the departments. Use the LOCATIONS and COUNTRIES tables. 
+Show the location ID, street address, city, state or province, and country in the output. 
+Use a NATURAL JOIN to produce the results
+*/
+SELECT location_id, street_address, city, state_province,
+country_name
+FROM locations
+NATURAL JOIN countries;
+
+
+
+/*
+The HR department needs a report of all employees with corresponding departments. 
+Write a query to display the last name, department ID, and department name for these employees
+*/
+SELECT last_name, department_id, department_name
+FROM employees
+JOIN departments
+USING (department_id);
+
+/*
+The HR department needs a report of employees in Toronto. Display the last name, 
+job, department number, and the department name for all employees who work in Toronto
+
+
+*/
+SELECT e.last_name, e.job_id, e.department_id, d.department_name
+FROM employees e JOIN departments d
+ON (e.department_id = d.department_id)
+JOIN locations l
+ON (d.location_id = l.location_id)
+WHERE LOWER(l.city) = 'toronto';
+
+/*
+Create a report to display employees’ last names and employee numbers along with their managers’ 
+last names and manager numbers. Label the columns Employee, Emp#, Manager, and Mgr#, respectively
+*/
+SELECT w.last_name "Employee", w.employee_id "EMP#",
+m.last_name "Manager", m.employee_id "Mgr#"
+FROM employees w JOIN employees m
+ON (w.manager_id = m.employee_id);
+
+
+
+
+
+
+
+Exercise 13 
+/*
+Create a report to display employees’ last names and employee numbers along with their managers’ 
+last names and manager numbers.
+Label the columns Employee, Emp#, Manager, and Mgr#, respectively. 
+The result must include the employees who has no manager
+*/
+
+SELECT w.last_name "Employee", w.employee_id "EMP#",
+m.last_name "Manager", m.employee_id "Mgr#"
+FROM employees w
+LEFT OUTER JOIN employees m
+ON (w.manager_id = m.employee_id)
+ORDER BY 2;
+
+/*
+Create a report for the HR department that displays employee last names, department numbers, 
+and all the employees who work in the same department as a given employee
+*/
+SELECT e.department_id department, e.last_name employee,
+c.last_name colleague
+FROM employees e JOIN employees c
+ON (e.department_id = c.department_id)
+WHERE e.employee_id <> c.employee_id
+ORDER BY e.department_id, e.last_name, c.last_name;
+
+/*
+The HR department wants to determine the names of all employees who were hired after Davies. 
+Create a query to display the name and hire date of any employee hired after employee Davies
+*/
+SELECT e.last_name, e.hire_date
+FROM employees e JOIN employees davies
+ON (davies.last_name = 'Davies')
+WHERE davies.hire_date < e.hire_date;
+
+/*
+The HR department needs to find the names and 
+hire dates of all employees who were hired before their managers, 
+along with their managers’ names and hire dates
+*/
+SELECT w.last_name, w.hire_date, m.last_name, m.hire_date
+FROM employees w JOIN employees m
+ON (w.manager_id = m.employee_id)
+WHERE w.hire_date < m.hire_date;
+
+
+Exercise 14
+/*The HR department needs a query that prompts the user for an employee’s last name. 
+The query then displays the last name and hire date of any employee in the same department as
+the employee whose name the user supplies (excluding that employee)*/
+SELECT last_name, hire_date
+FROM employees
+WHERE department_id = (SELECT department_id
+FROM employees
+WHERE last_name = '&&Enter_name')
+AND last_name <> '&Enter_name';
+
+
+/*
+Create a report that displays the employee number, last name, and salary of all employees who earn more than the average salary. 
+Sort the results in ascending order by salary
+*/
+SELECT employee_id, last_name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary)
+FROM employees)
+ORDER BY salary;
+
+/*
+Write a query that displays the employee number and last name of all employees who work
+in a department with any employee whose last name contains the letter “u.”
+*/
+SELECT employee_id, last_name
+FROM employees
+WHERE department_id IN (SELECT department_id
+FROM employees
+WHERE last_name like '%u%');
+
+
+/*
+The HR department needs a report that displays the last name, department number, and
+job ID of all employees whose department location ID is 1700.
+*/
+
+SELECT last_name, department_id, job_id
+FROM employees
+WHERE department_id IN (SELECT department_id
+FROM departments
+WHERE location_id = 1700);
+
+/*
+Create a report for HR that displays the last name and salary of every employee who
+reports to King.
+*/
+SELECT last_name, salary
+FROM employees
+WHERE manager_id = (SELECT employee_id
+FROM employees
+WHERE last_name = 'King');
+
+/*
+Create a report for HR that displays the department number, last name, and job ID for every employee in the Executive department
+*/
+SELECT department_id, last_name, job_id
+FROM employees
+WHERE department_id IN (SELECT department_id
+FROM departments
+WHERE department_name =
+'Executive');
+
+/*
+Create a report that displays a list of all employees whose salary is more than the salary of
+any employee from department 60.
+*/
+SELECT last_name FROM employees
+WHERE salary > ANY (SELECT salary
+FROM employees
+WHERE department_id=60);
+
+Exercise 15
+/*
+The HR department needs a list of department IDs for departments that do not contain the
+job ID ST_CLERK. Use the set operators to create this report
+*/
+SELECT department_id
+FROM departments
+MINUS
+SELECT department_id
+FROM employees
+WHERE job_id = 'ST_CLERK';
+
+/*
+The HR department needs a list of countries that have no departments located in them.
+Display the country IDs and the names of the countries. Use the set operators to create this
+report.
+*/
+
+SELECT country_id,country_name
+FROM countries
+MINUS
+SELECT l.country_id,c.country_name
+FROM locations l JOIN countries c
+ON (l.country_id = c.country_id)
+JOIN departments d
+ON d.location_id=l.location_id;
+
+
+/*
+Produce a list of jobs for departments 10, 50, and 20, in that order. Display job ID and
+department ID using the set operators.
+*/
+SELECT distinct job_id, department_id
+FROM employees
+WHERE department_id = 10
+UNION ALL
+SELECT DISTINCT job_id, department_id
+FROM employees
+WHERE department_id = 50
+UNION ALL
+SELECT DISTINCT job_id, department_id
+FROM employees
+WHERE department_id = 20;
+
+/*
+Create a report that lists the employee IDs and job IDs of those employees who currently
+have a job title that is the same as their previous one (that is, they changed jobs but have
+now gone back to doing the same job they did previously).
+*/
+SELECT employee_id,job_id
+FROM employees
+INTERSECT
+SELECT employee_id,job_id
+FROM job_history;
+
+/*
+The HR department needs a report with the following specifications:
+• Last names and department IDs of all employees from the EMPLOYEES table,
+regardless of whether or not they belong to a department
+• Department IDs and department names of all departments from the DEPARTMENTS
+table, regardless of whether or not they have employees working in them
+Write a compound query to accomplish this report.
+*/
+SELECT last_name,department_id,TO_CHAR(null)dept_name
+FROM employees
+UNION
+SELECT TO_CHAR(null),department_id,department_name
+FROM departments;
+
+Exercise 16
+CREATE TABLE	My_employee
+(id NUMBER(3), First_name VARCHAR2(14), last_name	VARCHAR2(14), user_id VARCHAR2(16), salary NUMBER(10));
+
+/*
+Populate the My_Employee table with the information contained on the 2 first rows of the following table
+*/
+INSERT INTO my_employee
+VALUES (1, 'Patel', 'Ralph', 'rpatel', 895);
+
+INSERT INTO my_employee (id, last_name, first_name,
+user_id, salary)
+VALUES (2, 'Dancs', 'Betty', 'bdancs', 860);
+
+/*
+Write an INSERT statement using substitution variables. The script should prompt for all the columns 
+(ID, LAST_NAME, FIRST_NAME, USERID, and SALARY). Test it with the remaining rows from the table
+*/
+
+INSERT INTO my_employee
+VALUES (&p_id, '&p_last_name', '&p_first_name','&p_userid', &p_salary);
+
+/*Make the data additions permanent*/
+
+commit;
+
+/*Change the last name of employee 3 to Drexler*/
+UPDATE my_employee
+SET last_name = 'Drexler'
+WHERE id = 3;
+
+/*
+Change the salary to $1,000 for all employees with a salary less than $900
+*/
+UPDATE my_employee
+SET salary = 1000
+WHERE salary < 900;
+
+/*
+Delete Betty Dancs from the MY_EMPLOYEE table
+*/
+DELETE
+FROM my_employee
+WHERE last_name = 'Dancs';
+
+/*
+Commit all pending changes.
+*/
+commit;
+
+/*Mark an intermediate point in the processing of the transaction*/
+SAVEPOINT step_9;
+
+/*
+Delete all the rows from the MY_EMPLOYEE table
+*/
+DELETE
+FROM my_employee;
+
+/*
+Discard the most recent DELETE operation without discarding the earlier INSERT operation
+*/
+rollback to step_9;
+
+
+
+
+
+Exercise 17
+
+/*Create the DEPT table based on the following table instance chart. Confirm that the table is created*/
+
+CREATE TABLE dept
+(id NUMBER(7)CONSTRAINT department_id_pk PRIMARY KEY,
+name VARCHAR2(25));
+
+/*Create the EMP table based on the following table instance chart
+*/
+CREATE TABLE emp
+(id NUMBER(7),
+last_name VARCHAR2(25),
+first_name VARCHAR2(25),
+dept_id NUMBER(7)
+CONSTRAINT emp_dept_id_FK REFERENCES dept (id)
+);
+
+
+
+/*
+Modify the EMP table. Add a COMMISSION column of the NUMBER data type, 
+with precision 2 and scale 2. Confirm your modification
+*/
+ALTER TABLE emp
+ADD commission NUMBER(2,2);
+
+/*
+Modify the EMP table to allow for longer employee last names
+*/
+ALTER TABLE emp
+MODIFY (last_name VARCHAR2(50));
+
+/*
+Drop the FIRST_NAME column from the EMP table. Confirm your modification by checking the description of the table
+*/
+ALTER TABLE emp
+DROP COLUMN first_name;
+
+/*
+In the EMP table, mark the DEPT_ID column as UNUSED. Confirm your modification by checking the description of the table.
+*/
+ALTER TABLE emp
+SET UNUSED (dept_id);
+
+/*
+Drop all the UNUSED columns from the EMP table
+*/
+ALTER TABLE emp
+DROP UNUSED COLUMNS;
+
+/*
+Create the EMPLOYEES2 table based on the structure of the EMPLOYEES table. 
+Include only the EMPLOYEE_ID, FIRST_NAME, LAST_NAME, SALARY, and DEPARTMENT_ID columns.
+Name the columns in your new table ID, FIRST_NAME, LAST_NAME, SALARY, and DEPT_ID, respectively
+*/
+CREATE TABLE employees2 AS
+SELECT employee_id id, first_name, last_name, salary,
+department_id dept_id
+FROM employees;
+
+/*Alter the status of the EMPLOYEES2 table to read-only*/
+ALTER TABLE employees2 READ ONLY;
+/*Drop the EMP, DEPT, and EMPLOYEES2 table.*/
+DROP TABLE emp;
+DROP TABLE dept;
+DROP TABLE employees2;
+
+
+ 
+JDBC
+package ex1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class TestConnection {
+
+	public static void main(String[] args) throws SQLException {
+        //Check this line before running it
+		String url = "jdbc:oracle:thin:@//localhost:1521/orcl";
+		//String url = "jdbc:oracle:thin:@localhost:1521:xe";
+
+		
+        //Establishing connection
+        Connection conn =DriverManager.getConnection(url,"hr","oracle");
+        
+        String sql = "select 'Hello World JDBC' from dual";
+        //Creating statement
+        Statement st = conn.createStatement();
+        ResultSet result = st.executeQuery(sql);
+        if(result.next()){
+            System.out.println(result.getString(1));
+        }
+        
+        
+        
+        //Display the employee number, last name, and salary of all employees who earn more than the average salary
+        String select1 = "Select employee_id, last_name, to_char(salary,'$99,999.00') sal from employees where salary > (select avg(salary) from employees)";        
+        ResultSet result1 = st.executeQuery(select1);
+        while(result1.next()){
+            System.out.println(result1.getInt("employee_id") + " " 
+            					+ result1.getString("last_name")+ " " 
+            					+ result1.getString("sal"));
+        }
+        
+        System.out.println("");
+        System.out.println("--Display the first name, last name, department name, address, city, country and region for all employees--");
+        //Display the first name, last name, department name, address, city, country and region for all employees 
+        String select2 = "Select first_name, last_name, department_name, street_address, city, country_name, region_name "
+        		+ "	from employees join departments using(department_id) "
+        		+ " join locations using(location_id) "
+        		+ " join countries using(country_id) "
+        		+ " join regions using(region_id) ";        
+        ResultSet result2 = st.executeQuery(select2);
+        while(result2.next()){
+            System.out.println(result2.getString("first_name") + " " 
+            					+ result2.getString("last_name")+ " " 
+            					+ result2.getString("department_name")+ " "
+            					+ result2.getString("street_address")+ " "
+            					+ result2.getString("city")+ " "
+            					+ result2.getString("country_name")+ " "
+            					+ result2.getString("region_name"));
+        }
+        
+        
+        //Display the number of departments grouped by regions. Show the region name, and the count of departments
+        System.out.println();
+        System.out.println("--Display the number of departments grouped by regions. Show the region name, and the count of departments--");
+        String select3 = "Select region_name, count(department_id) department "
+        		+ "	from departments join locations using(location_id) "
+        		+ " join countries using(country_id) "
+        		+ " join regions using(region_id) "
+        		+ " group by region_name";        
+        ResultSet result3 = st.executeQuery(select3);
+        while(result3.next()){
+            System.out.println(result3.getString("region_name") + " " 
+            					+ result3.getInt("department"));
+        }
+        
+        
+        //Display employeesâ€™ last names and employee numbers along with their managersâ€™ last names and manager numbers
+        System.out.println();
+        System.out.println("--Display employeesâ€™ last names and employee numbers along with their managersâ€™ last names and manager numbers--");
+        String select4 = "Select w.last_name emp_name, w.employee_id emp# , m.last_name mgr_name, m.employee_id mgr# "
+        		+ "	from employees w join employees m "
+        		+ " on (w.manager_id = m.employee_id)";        
+        ResultSet result4 = st.executeQuery(select4);
+        while(result4.next()){
+            System.out.println(result4.getString("emp_name") + " " 
+            					+ result4.getInt("emp#") + " " 
+            					+ result4.getString("mgr_name") + " " 
+            					+ result4.getInt("mgr#"));
+        }
+        
+        
+        //Display the first name and join date of the employees who joined between 2002 and 2005
+        System.out.println();
+        System.out.println("--Display the first name and join date of the employees who joined between 2002 and 2005--");
+        String select5 = "Select first_name, to_char(hire_date, 'DD/MM/YYYY') join_date"
+        		+ "	from employees"
+        		+ " where to_char(hire_date,'YYYY') IN ('2002','2005') ";        
+        ResultSet result5 = st.executeQuery(select5);
+        while(result5.next()){
+            System.out.println(result5.getString("first_name") + " " 
+            					+ result5.getString("join_date"));
+        }
+        
+        
+        st.close();
+        
+    }
+
+}
+ 
+Version running in my eclipse
+package ex1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class TestConnection2 {
+
+	public static void main(String[] args) throws SQLException {
+        
+		
+		Connection conn =DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","hr","123");
+        
+        String sql = "select 'Hello World JDBC' from dual";
+        //Creating statement
+        Statement st = conn.createStatement();
+        ResultSet result = st.executeQuery(sql);
+        if(result.next()){
+            System.out.println(result.getString(1));
+        }
+        
+        
+        
+        //Display the employee number, last name, and salary of all employees who earn more than the average salary
+        String select1 = "Select employee_id, last_name, to_char(salary,'$99,999.00') sal from employees where salary > (select avg(salary) from employees)";        
+        ResultSet result1 = st.executeQuery(select1);
+        while(result1.next()){
+            System.out.println(result1.getInt("employee_id") + " " 
+            					+ result1.getString("last_name")+ " " 
+            					+ result1.getString("sal"));
+        }
+        
+        System.out.println("");
+        System.out.println("--Display the first name, last name, department name, address, city, country and region for all employees--");
+        //Display the first name, last name, department name, address, city, country and region for all employees 
+        String select2 = "Select first_name, last_name, department_name, street_address, city, country_name, region_name "
+        		+ "	from employees join departments using(department_id) "
+        		+ " join locations using(location_id) "
+        		+ " join countries using(country_id) "
+        		+ " join regions using(region_id) ";        
+        ResultSet result2 = st.executeQuery(select2);
+        while(result2.next()){
+            System.out.println(result2.getString("first_name") + " " 
+            					+ result2.getString("last_name")+ " " 
+            					+ result2.getString("department_name")+ " "
+            					+ result2.getString("street_address")+ " "
+            					+ result2.getString("city")+ " "
+            					+ result2.getString("country_name")+ " "
+            					+ result2.getString("region_name"));
+        }
+        
+        
+        //Display the number of departments grouped by regions. Show the region name, and the count of departments
+        System.out.println();
+        System.out.println("--Display the number of departments grouped by regions. Show the region name, and the count of departments--");
+        String select3 = "Select region_name, count(department_id) department "
+        		+ "	from departments join locations using(location_id) "
+        		+ " join countries using(country_id) "
+        		+ " join regions using(region_id) "
+        		+ " group by region_name";        
+        ResultSet result3 = st.executeQuery(select3);
+        while(result3.next()){
+            System.out.println(result3.getString("region_name") + " " 
+            					+ result3.getInt("department"));
+        }
+        
+        
+        //Display employeesâ€™ last names and employee numbers along with their managersâ€™ last names and manager numbers
+        System.out.println();
+        System.out.println("--Display employeesâ€™ last names and employee numbers along with their managersâ€™ last names and manager numbers--");
+        String select4 = "Select w.last_name emp_name, w.employee_id emp# , m.last_name mgr_name, m.employee_id mgr# "
+        		+ "	from employees w join employees m "
+        		+ " on (w.manager_id = m.employee_id)";        
+        ResultSet result4 = st.executeQuery(select4);
+        while(result4.next()){
+            System.out.println(result4.getString("emp_name") + " " 
+            					+ result4.getInt("emp#") + " " 
+            					+ result4.getString("mgr_name") + " " 
+            					+ result4.getInt("mgr#"));
+        }
+        
+        
+        //Display the first name and join date of the employees who joined between 2002 and 2005
+        System.out.println();
+        System.out.println("--Display the first name and join date of the employees who joined between 2002 and 2005--");
+        String select5 = "Select first_name, to_char(hire_date, 'DD/MM/YYYY') join_date"
+        		+ "	from employees"
+        		+ " where to_char(hire_date,'YYYY') IN ('2002','2005') ";        
+        ResultSet result5 = st.executeQuery(select5);
+        while(result5.next()){
+            System.out.println(result5.getString("first_name") + " " 
+            					+ result5.getString("join_date"));
+        }
+        
+        
+        st.close();
+        
+    }
+
+}
+
